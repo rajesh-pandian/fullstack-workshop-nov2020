@@ -1,0 +1,60 @@
+/* You can add global styles to this file, and also import other style files */
+
+.w-75{
+  max-width: 75px;
+}
+
+.w-100{
+  max-width: 100px;
+}
+
+.w-300{
+  max-width: 300px;
+}
+
+.w-400{
+  max-width: 400px;
+}
+
+.th-center{
+  text-align: center;
+}
+
+.th-left{
+  text-align: left;
+}
+
+.th-right{
+  text-align: right;
+}
+
+.mat-header-cell.text-center {
+  display:flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.mat-cell.text-center {
+  display:flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.search-add-outer {
+
+  display: flex;
+  //justify-content: space-between;
+}
+
+
+.search-add-inner {
+  max-width: 965px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-add-inner button {
+  max-height: 3em;
+  margin-right: 45px;
+}

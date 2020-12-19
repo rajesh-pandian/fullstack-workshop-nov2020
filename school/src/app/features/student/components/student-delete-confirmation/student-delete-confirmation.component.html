@@ -1,0 +1,29 @@
+<mat-card >
+
+  <ng-container *ngIf="!studentId.errors?.studentInUse; else bad">
+    <p mat-dialog-title>{{data.title}}</p>
+    <p display-2>{{data.message}}</p>
+  </ng-container>
+
+  <ng-template #bad>
+    <mat-error>
+      {{data.name}} is in use by a student-course.  One or more student-courses must be deleted first.
+    </mat-error>
+  </ng-template>
+
+
+  <div mat-dialog-actions>
+
+    <ng-container *ngIf="!studentId.errors?.studentInUse; else bad2">
+      <button mat-button (click)="onDismiss()">No</button>
+      <button mat-raised-button color="primary" (click)="onConfirm()">
+        Yes
+      </button>
+    </ng-container>
+
+    <ng-template #bad2>
+      <button mat-button  (click)="onDismiss()">Exit </button>
+    </ng-template>
+
+  </div>
+</mat-card>

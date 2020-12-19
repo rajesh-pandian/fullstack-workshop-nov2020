@@ -1,0 +1,73 @@
+
+<h2>Courses</h2>
+
+<ng-container class="search-add-outer">
+
+  <div class="search-add-inner">
+
+    <mat-form-field class="search-box" appearance="standard">
+
+      <input  matInput  [placeholder]="'search courses'" #input
+              (keyup)="searchCourses(input.value)">
+    </mat-form-field>
+
+    <button mat-button class="mat-raised-button mat-primary"
+            (click)="createCourse()">Add Course</button>
+
+  </div>
+
+</ng-container>
+
+
+<mat-table  class="lessons-table mat-elevation-z8" [dataSource]="dataSource" matSort>
+
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef [ngClass]="'w-75'" mat-sort-header>#</mat-header-cell>
+    <mat-cell *matCellDef="let course" [ngClass]="'w-75'">{{course.id}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+    <mat-cell *matCellDef="let course">{{course.name}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="description">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+    <mat-cell *matCellDef="let course">{{course.description}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="roomName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Room</mat-header-cell>
+    <mat-cell *matCellDef="let course"  (click)="roomDetail(course)">{{course.roomName}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="teacherLastName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Teacher</mat-header-cell>
+    <mat-cell *matCellDef="let course">{{course.teacherFirstName}} {{course.teacherLastName}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="edit">
+    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'"> </mat-header-cell>
+    <mat-cell *matCellDef="let course" [ngClass]="'w-100 text-center'">
+      <button mat-button class="mat-raised-button mat-primary text-center"
+              (click)="editCourse(course)">Edit</button>
+    </mat-cell>
+  </ng-container>
+
+
+  <ng-container matColumnDef="delete">
+    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'"> </mat-header-cell>
+    <mat-cell *matCellDef="let course" [ngClass]="'w-100 text-center'">
+      <button mat-button class="mat-raised-button mat-accent"
+              (click)="deleteCourse(course)">Delete</button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+
+</mat-table>
+
+

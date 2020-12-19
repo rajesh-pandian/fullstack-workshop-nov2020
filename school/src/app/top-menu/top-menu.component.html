@@ -1,0 +1,43 @@
+
+<button mat-icon-button [mat-menu-trigger-for]="menu">
+
+  <mat-icon>menu</mat-icon>
+
+</button>
+
+<mat-menu #menu>
+
+  <button mat-menu-item routerLink="/home">
+    <mat-icon>home</mat-icon>
+    <span>Home</span>
+  </button>
+
+  <button mat-menu-item routerLink="/teachers">
+    <mat-icon>people</mat-icon>
+    <span>Teachers</span>
+  </button>
+
+  <button mat-menu-item routerLink="/students">
+    <mat-icon>people</mat-icon>
+    <span>Students</span>
+  </button>
+
+
+  <button mat-menu-item routerLink="/rooms">
+    <mat-icon>room</mat-icon>
+    <span>Rooms</span>
+  </button>
+
+  <button mat-menu-item routerLink="/courses">
+    <mat-icon>article</mat-icon>
+    <span>Courses</span>
+  </button>
+
+  <button mat-menu-item routerLink="/studentCourses">
+    <mat-icon>article</mat-icon>
+    <span>Student Courses</span>
+  </button>
+
+
+
+</mat-menu>

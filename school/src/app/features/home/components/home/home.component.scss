@@ -1,0 +1,22 @@
+.outer {
+  justify-content: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+
+.container {
+  justify-content: center;
+  height: 95vh;
+  width: 100vw;
+  background: linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
+  linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
+  linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+

@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>{{instruction}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+  <mat-form-field appearance="standard">
+    <mat-label>name</mat-label>
+    <input matInput placeHolder="name" formControlName="name">
+    <mat-error *ngIf="form?.controls?.name?.errors?.required">Name is required.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field >
+    <mat-label>description</mat-label>
+    <input matInput placeHolder="description" formControlName="description">
+    <mat-error *ngIf="form?.controls?.description?.errors?.required">Description is required.</mat-error>
+  </mat-form-field>
+
+
+  <mat-form-field>
+    <mat-select placeholder="select teacher" formControlName="teacherId">
+
+      <mat-option *ngFor="let teacher of teachers" [value]="teacher.id">
+        {{teacher.firstName}} {{teacher.lastName}}
+      </mat-option>
+
+    </mat-select>
+
+    <mat-error *ngIf="form?.controls?.teacherId?.errors?.required">Teacher is required.</mat-error>
+
+  </mat-form-field>
+
+
+  <mat-form-field>
+    <mat-select placeholder="select room" formControlName="roomId">
+
+      <mat-option *ngFor="let room of rooms" [value]="room.id">
+        {{room.name}}
+      </mat-option>
+
+    </mat-select>
+
+    <mat-error *ngIf="form?.controls?.roomId?.errors?.required">Room is required.</mat-error>
+  </mat-form-field>
+
+
+
+  <mat-form-field>
+    <mat-select placeholder="select subject" formControlName="subjectId">
+
+      <mat-option *ngFor="let courseType of courseTypes" [value]="courseType.id">
+        {{courseType.description}}
+      </mat-option>
+
+    </mat-select>
+
+    <mat-error *ngIf="form?.controls?.subjectId?.errors?.required">Subject is required.</mat-error>
+
+  </mat-form-field>
+
+
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions>
+
+  <button class="mat-raised-button "
+          (click)="close()">
+    Close
+  </button>
+
+  <button  *ngIf="mode === modeEnum.edit"  class="mat-raised-button mat-primary"
+           (click)="save()">
+    Save
+  </button>
+
+  <button  *ngIf="mode === modeEnum.create"  class="mat-raised-button mat-primary"
+           (click)="create()">
+    Add
+  </button>
+
+
+</mat-dialog-actions>

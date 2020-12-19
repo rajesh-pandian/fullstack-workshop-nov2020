@@ -1,0 +1,67 @@
+
+<h2>Student-Courses</h2>
+
+<ng-container class="search-add-outer">
+
+  <div class="search-add-inner">
+    <mat-form-field  appearance="standard">
+
+      <input  matInput  [placeholder]="'search student-courses'" #input
+              (keyup)="searchStudentCourses(input.value)">
+
+    </mat-form-field>
+
+
+    <button mat-button class="mat-raised-button mat-primary"
+            (click)="createStudentCourse()">Add Student-Course</button>
+  </div>
+
+</ng-container>
+
+
+
+
+<mat-table  class="lessons-table mat-elevation-z8" [dataSource]="dataSource" matSort>
+
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef [ngClass]="'w-300'" mat-sort-header>Course Name</mat-header-cell>
+    <mat-cell *matCellDef="let studentCourse" [ngClass]="'w-300'"       (click)="searchForLike(studentCourse)"        >{{studentCourse.name}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="studentLastName">
+    <mat-header-cell *matHeaderCellDef [ngClass]="'w-300'" mat-sort-header>Student Name</mat-header-cell>
+    <mat-cell *matCellDef="let studentCourse" [ngClass]="'w-300'">{{studentCourse.studentFirstName}} {{studentCourse.studentLastName}}</mat-cell>
+  </ng-container>
+
+
+  <ng-container matColumnDef="edit">
+    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'">
+    </mat-header-cell>
+    <mat-cell *matCellDef="let studentCourse" [ngClass]="'w-100 text-center'">
+      <button mat-button class="mat-raised-button mat-primary"
+              (click)="editStudentCourse(studentCourse)">Edit</button>
+    </mat-cell>
+  </ng-container>
+
+
+
+  <ng-container matColumnDef="delete">
+    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'">
+    </mat-header-cell>
+    <mat-cell *matCellDef="let studentCourse" [ngClass]="'w-100 text-center'">
+      <button mat-button class="mat-raised-button mat-accent"
+              (click)="deleteStudentCourse(studentCourse)">Delete</button>
+    </mat-cell>
+  </ng-container>
+
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+
+</mat-table>
+
+
+

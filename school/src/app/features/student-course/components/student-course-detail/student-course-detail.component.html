@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>{{instruction}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+
+  <mat-form-field>
+    <mat-select placeholder="select student" formControlName="studentId">
+
+      <mat-option *ngFor="let student of students" [value]="student.id">
+        {{student.firstName}} {{student.lastName}}
+      </mat-option>
+
+    </mat-select>
+
+    <mat-error *ngIf="form?.controls?.student_id?.errors?.required">Student is required.</mat-error>
+  </mat-form-field>
+
+
+  <mat-form-field>
+    <mat-select placeholder="select course" formControlName="courseId">
+
+      <mat-option *ngFor="let course of courses" [value]="course.id">
+        {{course.name}}
+      </mat-option>
+
+    </mat-select>
+
+    <mat-error *ngIf="form?.controls?.course_id?.errors?.required">Course is required.</mat-error>
+  </mat-form-field>
+
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions>
+
+  <button class="mat-raised-button "
+          (click)="close()">
+    Close
+  </button>
+
+  <button  *ngIf="mode === modeEnum.edit"  class="mat-raised-button mat-primary"
+           (click)="save()">
+    Save
+  </button>
+
+  <button  *ngIf="mode === modeEnum.create"  class="mat-raised-button mat-primary"
+           (click)="create()">
+    Add
+  </button>
+
+
+</mat-dialog-actions>
