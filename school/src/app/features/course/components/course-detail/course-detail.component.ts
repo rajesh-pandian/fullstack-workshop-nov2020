@@ -85,21 +85,7 @@ export class CourseDetailComponent implements OnInit {
     forkJoin([this.teachers$, this.student$, this.room$, this.courseType$])
       .subscribe(results => {
         [this.teachers, this.students, this.rooms, this.courseTypes] = results;
-        console.log('got some teachers ', this.teachers);
-        console.log('got some students ', this.students);
-        console.log('got some rooms ', this.rooms);
-        console.log('got some course types ', this.courseTypes);
-
       })
-
-
-    // forkJoin([golfers$, courses$, scores$]).subscribe( results => {
-      //   [this.golfers, this.courses, this.scores] = results; // assign values via array destructuring
-
-    // this.teachers$.subscribe( val => {
-    //   this.teachers = val;
-    //   console.log('got some teachers ', this.teachers);
-    // })
   }
 
 
