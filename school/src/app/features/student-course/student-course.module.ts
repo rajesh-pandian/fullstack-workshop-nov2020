@@ -3,6 +3,8 @@ import {StudentCourseComponent} from "./components/student-course/student-course
 import {StudentCourseDetailComponent} from "./components/student-course-detail/student-course-detail.component";
 import {RouterModule, Routes} from "@angular/router";
 import {SharedModule} from "../../shared/shared.module";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 const routes: Routes = [
   { path: '', component: StudentCourseComponent }
@@ -13,10 +15,12 @@ const routes: Routes = [
     StudentCourseComponent,
     StudentCourseDetailComponent
   ],
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes)
-  ],
+    imports: [
+        SharedModule,
+        RouterModule.forChild(routes),
+        MatPaginatorModule,
+        MatProgressSpinnerModule
+    ],
   entryComponents: [
     StudentCourseDetailComponent
   ]

@@ -12,7 +12,7 @@ class CourseController {
             return res.json({'result': 'success'});
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: 'Failed', message: 'Error creating Course' });
+            return res.status(500).json({ status: 'Failed', message: 'Error creating course' });
         }
     } 
 
@@ -24,7 +24,7 @@ class CourseController {
             return res.json({'result': 'success'});
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: 'Failed', message: 'Error updating Course' });
+            return res.status(500).json({ status: 'Failed', message: 'Error updating course' });
         }
     } 
 
@@ -35,7 +35,7 @@ class CourseController {
             return res.json({'result': 'success'});
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: 'Failed', message: 'Error deleting Course' });
+            return res.status(500).json({ status: 'Failed', message: 'Error deleting course' });
         }
     } 
 
@@ -45,49 +45,63 @@ class CourseController {
             return res.json(result);
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Courses' });
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving all courses' });
         }
     }
 
+    retrieveCoursesFiltered= async (req, res) => {
+        try {
+            const courseDetails = req.query;
+            const result = await this.courseService.retrieveCoursesFiltered(courseDetails);
+            return res.json(result);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving filtered courses' });
+        }
+    }
+
+    countCourses= async (req, res) => {
+        try {
+            const courseDetails = req.query;
+            const result = await this.courseService.countCourses(courseDetails);
+            return res.json(result);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'Failed', message: 'Error counting courses' });
+        }
+    }
 
 
     retrieveAllCoursesForTeacher= async (req, res) => {
         try {
             const teacherId = req.query;
-            console.log('teacher id is ', teacherId);
             const result = await this.courseService.retrieveAllCoursesForTeacher(teacherId);
             return res.json(result);
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Courses for Teacher' });
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Courses for teacher' });
         }
     }
-
-
 
     retrieveAllCoursesForRoom= async (req, res) => {
         try {
             const roomId = req.query;
-            console.log('room id is ', roomId);
             const result = await this.courseService.retrieveAllCoursesForRoom(roomId);
             return res.json(result);
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Courses for Teacher' });
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Courses for room' });
         }
     }
-
-
 
     retrieveCourse= async (req, res) => {
         try {
             const courseDetails = req.query;
-            console.log('course details are ', courseDetails);
             const result = await this.courseService.retrieveCourse(courseDetails);
             return res.json(result);
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: 'Failed', message: 'Error retrieving Course' });
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving course' });
         }
     } 
 }

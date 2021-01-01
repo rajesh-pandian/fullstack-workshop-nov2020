@@ -1,20 +1,22 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {Observable, of} from "rxjs";
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {fromEvent, merge, Observable, of, Subscription} from "rxjs";
 import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
-import {catchError, concatMap, tap} from "rxjs/operators";
+import {catchError, concatMap, debounceTime, distinctUntilChanged, tap} from "rxjs/operators";
 import {StudentCourseDetailComponent} from "../student-course-detail/student-course-detail.component";
 import {MatSort} from "@angular/material/sort";
 import {StudentCourse} from "../../../../shared/models/course.model";
 import {StudentCourseService} from "../../../../shared/services/student-course.service";
 import {ConfirmDialogComponent} from "../../../../shared/dialogs/confirm-dialog/confirm-dialog.component";
+import {StudentCourseDatasource} from "../../../../shared/services/student-course.datasource";
+import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-student-course',
   templateUrl: './student-course.component.html',
   styleUrls: ['./student-course.component.scss']
 })
-export class StudentCourseComponent implements OnInit, AfterViewInit {
+export class StudentCourseComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatSort, { static: false })
   sort: MatSort;
@@ -22,11 +24,17 @@ export class StudentCourseComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable, { static: false })
   matTable: MatTable<any>;
 
-  dataSource = new MatTableDataSource([]);
-  studentCourse$: Observable<StudentCourse[]>
-  displayedColumns = [  "name", "studentLastName", "edit", "delete" ]
+  @ViewChild(MatPaginator, { static: false })
+  paginator: MatPaginator;
 
-  iterator = 0;
+  @ViewChild('input', { static: false })
+  input: ElementRef;
+
+  dataSource: StudentCourseDatasource;
+  $subscription = new Subscription();
+  numStudentCourses = 100;
+
+  displayedColumns = [  "name", "studentLastName", "edit", "delete" ]
 
   constructor(private studentCourseService: StudentCourseService,
               private dialog: MatDialog) {
@@ -34,29 +42,58 @@ export class StudentCourseComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.studentCourse$ = this.studentCourseService.getStudentCourses();
-    this.getStudentCourses();
+    this.dataSource = new StudentCourseDatasource(this.studentCourseService);
+    this.dataSource.loadStudentCourses('', 'name','asc', '0', '15');
+    this.$subscription.add(
+      this.dataSource.numStudentCourses$.subscribe(
+        count => this.numStudentCourses = count
+      )
+    );
   }
 
   ngAfterViewInit() {
-    this.sort.sortChange.subscribe(() => {
-      this.dataSource.sortData(this.dataSource.data, this.sort);
-      this.matTable.renderRows();
-    });
+
+    this.$subscription.add(
+      this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0)
+    );
+
+    this.$subscription.add(
+      fromEvent(this.input.nativeElement,'keyup')
+        .pipe(
+          debounceTime(350),
+          distinctUntilChanged(),
+          tap(() => {
+            this.paginator.pageIndex = 0;
+            this.getStudentCourses();
+          })
+        )
+        .subscribe()
+    );
+
+    this.$subscription.add(
+      merge(this.paginator.page, this.sort.sortChange)
+        .pipe(
+          tap(() => {
+            this.getStudentCourses();
+            }
+          )
+        )
+        .subscribe()
+    );
   }
+
 
   getStudentCourses() {
-    this.studentCourse$.subscribe(
-      studCrs => {
-        console.log('got student courses ', studCrs);
-        this.dataSource.data = studCrs;
-      }
-    )
+
+    this.dataSource.loadStudentCourses(
+      this.input.nativeElement.value,
+      this.sort.active,
+      this.sort.direction,
+      this.paginator.pageIndex.toString(),
+      this.paginator.pageSize.toString()
+    );
   }
 
-  searchStudentCourses(search: string) {
-    this.dataSource.filter = search.toLowerCase().trim();
-  }
 
   editStudentCourse(studentCourse: StudentCourse) {
 
@@ -143,23 +180,7 @@ export class StudentCourseComponent implements OnInit, AfterViewInit {
 
   }
 
-   // todo: remove this test code
-  searchForLike(studentCourse: StudentCourse) {
-    console.log('in search for like');
-    if (this.iterator++ % 2 === 0) {
-      this.studentCourseService.searchStudentCourseByStudentId(studentCourse.studentId)
-        .subscribe(
-          res => {
-            console.log('got results of search for like ', res);
-          }
-        )
-    } else {
-      this.studentCourseService.searchStudentCourseByCourseId(studentCourse.courseId)
-        .subscribe(
-          res => {
-            console.log('got results of search for like ', res);
-          }
-        )
-    }
+  ngOnDestroy() {
+    this.$subscription.unsubscribe();
   }
 }

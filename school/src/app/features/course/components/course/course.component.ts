@@ -1,13 +1,15 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {Observable, of} from "rxjs";
-import {MatTable, MatTableDataSource} from "@angular/material/table";
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {fromEvent, merge, of, Subscription} from "rxjs";
+import {MatTable} from "@angular/material/table";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
-import {catchError, concatMap, tap} from "rxjs/operators";
+import {catchError, concatMap, debounceTime, distinctUntilChanged, tap} from "rxjs/operators";
 import {CourseDetailComponent} from "../course-detail/course-detail.component";
 import {MatSort} from "@angular/material/sort";
 import {Course, CourseResolved} from "../../../../shared/models/course.model";
 import {CourseService} from "../../../../shared/services/course.service";
 import {CourseDeleteConfirmationComponent} from "../course-delete-confirmation/course-delete-confirmation.component";
+import {MatPaginator} from "@angular/material/paginator";
+import {CourseDatasource} from "../../../../shared/services/course.datasource";
 
 
 @Component({
@@ -15,7 +17,7 @@ import {CourseDeleteConfirmationComponent} from "../course-delete-confirmation/c
   templateUrl: './course.component.html',
   styleUrls: ['./course.component.scss']
 })
-export class CourseComponent implements OnInit, AfterViewInit {
+export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort, { static: false })
   sort: MatSort;
@@ -23,8 +25,16 @@ export class CourseComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable, { static: false })
   matTable: MatTable<any>;
 
-  dataSource = new MatTableDataSource([]);
-  course$: Observable<CourseResolved[]>
+  @ViewChild(MatPaginator, { static: false })
+  paginator: MatPaginator;
+
+  @ViewChild('input', { static: false })
+  input: ElementRef;
+
+
+  dataSource: CourseDatasource;
+  $subscription = new Subscription();
+  numCourses = 100;
 
   displayedColumns = ["id", "name",  "description", "roomName", "teacherLastName", "edit", "delete"]
 
@@ -32,30 +42,56 @@ export class CourseComponent implements OnInit, AfterViewInit {
               private dialog: MatDialog) { }
 
   ngOnInit() {
-    this.course$ = this.courseService.getCourses();
-    this.getCourses();
+    this.dataSource = new CourseDatasource(this.courseService);
+    this.dataSource.loadCourses('', 'name','asc', '0', '15');
+    this.$subscription.add(
+        this.dataSource.numCourses$.subscribe(
+            count => this.numCourses = count
+        )
+    );
   }
 
   ngAfterViewInit() {
-    this.sort.sortChange.subscribe(() => {
-      this.dataSource.sortData(this.dataSource.data, this.sort);
-      this.matTable.renderRows();
-    });
+
+    this.$subscription.add(
+        this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0)
+    );
+
+    this.$subscription.add(
+        fromEvent(this.input.nativeElement,'keyup')
+            .pipe(
+                debounceTime(350),
+                distinctUntilChanged(),
+                tap(() => {
+                  this.paginator.pageIndex = 0;
+                  this.getCourses();
+                })
+            )
+            .subscribe()
+    );
+
+    this.$subscription.add(
+        merge(this.paginator.page, this.sort.sortChange)
+            .pipe(
+                tap(() => {
+                      this.getCourses();
+                    }
+                )
+            )
+            .subscribe()
+    );
+
   }
 
   getCourses() {
-    this.course$.subscribe(
-      courses => {
-        this.dataSource.data = courses;
-      },
-      error => {
-        console.error('error getting courses ', error);
-      }
-    )
-  }
 
-  searchCourses(search: string) {
-    this.dataSource.filter = search.toLowerCase().trim();
+    this.dataSource.loadCourses(
+        this.input.nativeElement.value,
+        this.sort.active,
+        this.sort.direction,
+        this.paginator.pageIndex.toString(),
+        this.paginator.pageSize.toString()
+    );
   }
 
   editCourse(course: CourseResolved) {
@@ -120,15 +156,8 @@ export class CourseComponent implements OnInit, AfterViewInit {
       )
   }
 
+
   deleteCourse(course: Course) {
-
-    // const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-    //   maxWidth: "400px",
-    //   data: {
-    //     title: "Are you sure?",
-    //     message: `You are about to delete  ${course.name}`}
-    // });
-
 
     const dialogRef = this.dialog.open(CourseDeleteConfirmationComponent, {
       maxWidth: "400px",
@@ -139,7 +168,6 @@ export class CourseComponent implements OnInit, AfterViewInit {
         message: `You are about to delete ${course.name}`
       }
     });
-
 
     dialogRef.afterClosed().subscribe(dialogResult => {
       if (dialogResult) {
@@ -154,11 +182,10 @@ export class CourseComponent implements OnInit, AfterViewInit {
           )
       }
     });
-
   }
 
-
-  roomDetail(course: CourseResolved) {
-    alert(`room capacity is ${course.capacity}`)
+  ngOnDestroy() {
+      this.$subscription.unsubscribe();
   }
+
 }

@@ -8,20 +8,23 @@ class Student_courseMiddleware {
     validateCreate= async (req, res, next) =>  {
         const studentCourseDetails = req.body
 
-        console.log('in student_course middleware and studentCourse details are ', studentCourseDetails);
-
-
         let errorList = [];
         let isError = false;
 
         if (!studentCourseDetails.studentId || studentCourseDetails.studentId < 0) {
             isError = true;
-            errorList.push('Student ID cannot be Empty or less than 0')
+            errorList.push('Student Id cannot be Empty or less than 0')
         }
 
         if (!studentCourseDetails.courseId || studentCourseDetails.courseId < 0) {
             isError = true;
-            errorList.push('Course ID cannot be Empty or less than 0')
+            errorList.push('Course Id cannot be Empty or less than 0')
+        }
+
+        const result = await this.studentCourseService.retrieveStudentCoursesByStudentIdAndCourseId(studentCourseDetails);
+        if (result && result.length != 0 ) {
+            isError = true;
+            errorList.push('StudentCourse already exists')
         }
 
         if (isError) {
@@ -36,8 +39,6 @@ class Student_courseMiddleware {
         let errorList = [];
         let isError = false;
 
-        console.log('xxx in student_course middleware and studentCourse details are ', studentCourseDetails);
-
         const result = await this.studentCourseService.retrieveStudentCourseById(req.params.studentCourseId);
         if (result && result.length === 0) {
             isError = true;
@@ -46,12 +47,12 @@ class Student_courseMiddleware {
 
         if (!studentCourseDetails.studentId || studentCourseDetails.studentId < 0) {
             isError = true;
-            errorList.push('Student ID cannot be Empty or less than 0')
+            errorList.push('Student Id cannot be Empty or less than 0')
         }
 
         if (!studentCourseDetails.courseId || studentCourseDetails.courseId < 0) {
             isError = true;
-            errorList.push('Course ID cannot be Empty or less than 0')
+            errorList.push('Course Id cannot be Empty or less than 0')
         }
 
         if (isError) {

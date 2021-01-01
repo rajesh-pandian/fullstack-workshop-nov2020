@@ -13,6 +13,13 @@ router.get('/allResolved', courseController.retrieveAllCoursesResolved);
 
 
 
+router.get('/filtered', courseController.retrieveCoursesFiltered);
+
+
+router.get('/count', courseController.countCourses);
+
+
+
 
 router.get('/withTeacher', courseController.retrieveAllCoursesForTeacher);
 

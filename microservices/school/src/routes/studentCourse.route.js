@@ -8,6 +8,10 @@ const studentCourseMiddleware = new StudentCourseMiddleware();
 
 router.get('/all', studentCourseController.retrieveAllStudentCourses);
 
+router.get('/filtered', studentCourseController.retrieveStudentCoursesFiltered);
+
+router.get('/count', studentCourseController.countStudentCourses);
+
 router.get('/searchByStudent', studentCourseController.retrieveStudentCoursesByStudentId);
 
 router.get('/searchByCourse', studentCourseController.retrieveStudentCoursesByCourseId);

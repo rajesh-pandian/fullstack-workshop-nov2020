@@ -6,9 +6,7 @@
   <div class="search-add-inner">
 
     <mat-form-field class="search-box" appearance="standard">
-
-      <input  matInput  [placeholder]="'search courses'" #input
-              (keyup)="searchCourses(input.value)">
+      <input  matInput  [placeholder]="'search courses'" #input>
     </mat-form-field>
 
     <button mat-button class="mat-raised-button mat-primary"
@@ -18,8 +16,14 @@
 
 </ng-container>
 
+<div class="spinner-container" *ngIf="dataSource.loading$ | async">
 
-<mat-table  class="lessons-table mat-elevation-z8" [dataSource]="dataSource" matSort>
+  <mat-spinner></mat-spinner>
+
+</div>
+
+<mat-table  class="lessons-table mat-elevation-z8" [dataSource]="dataSource" matSort
+            matSortActive="name" matSortDirection="asc" matSortDisableClear>
 
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef [ngClass]="'w-75'" mat-sort-header>#</mat-header-cell>
@@ -38,7 +42,7 @@
 
   <ng-container matColumnDef="roomName">
     <mat-header-cell *matHeaderCellDef mat-sort-header>Room</mat-header-cell>
-    <mat-cell *matCellDef="let course"  (click)="roomDetail(course)">{{course.roomName}}</mat-cell>
+    <mat-cell *matCellDef="let course">{{course.roomName}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="teacherLastName">
@@ -70,4 +74,6 @@
 
 </mat-table>
 
+<mat-paginator  [length]="numCourses"  [pageSize]="15"
+                [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
 
