@@ -46,7 +46,7 @@ export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.dataSource = new SubjectDatasource(this.subjectService);
-    this.dataSource.loadSubjects('', 'name','asc', '0', '15');
+    this.dataSource.loadSubjects('', 'name','asc', '0', '12');
     this.$subscription.add(
         this.dataSource.numSubjects$.subscribe(
             count => this.numSubjects = count

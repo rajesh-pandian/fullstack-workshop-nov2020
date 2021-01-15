@@ -24,7 +24,6 @@ export class TeacherService {
   }
 
   createTeacher(teacher: Teacher) {
-    console.log('in create teacher xxxx ', teacher);
     return this.http
       .post(`${this.api}/create`, teacher)
       .pipe(catchError(this.handleError));

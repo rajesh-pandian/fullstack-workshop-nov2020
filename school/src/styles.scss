@@ -80,3 +80,8 @@ mat-dialog-content  {
   max-height: 3em;
   margin-right: 45px;
 }
+
+.paginator {
+  display: flex;
+  align-items: flex-start;
+}

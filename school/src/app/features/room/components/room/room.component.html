@@ -11,7 +11,6 @@
 
     <mat-form-field  appearance="standard">
 
-
       <input  matInput  [placeholder]="'search rooms'" #input
               (keyup)="searchRooms(input.value)">
 
@@ -29,25 +28,25 @@
 
 
   <ng-container matColumnDef="id">
-    <mat-header-cell *matHeaderCellDef [ngClass]="'w-75'" mat-sort-header>#</mat-header-cell>
-    <mat-cell *matCellDef="let room" [ngClass]="'w-75'">{{room.id}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-75' mat-sort-header>#</mat-header-cell>
+    <mat-cell *matCellDef="let room" ngClass='w-75'>{{room.id}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef [ngClass]="'w-300'" mat-sort-header>Name</mat-header-cell>
-    <mat-cell *matCellDef="let room" [ngClass]="'w-300'">{{room.name}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-300' mat-sort-header>Name</mat-header-cell>
+    <mat-cell *matCellDef="let room" ngClass='w-300'>{{room.name}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="capacity">
-    <mat-header-cell *matHeaderCellDef [ngClass]="'w-100'" mat-sort-header>Capacity</mat-header-cell>
-    <mat-cell *matCellDef="let room" [ngClass]="'w-100'">{{room.capacity}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-100' mat-sort-header>Capacity</mat-header-cell>
+    <mat-cell *matCellDef="let room" ngClass='w-100'>{{room.capacity}}</mat-cell>
   </ng-container>
 
 
   <ng-container matColumnDef="edit">
-    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'">
+    <mat-header-cell  *matHeaderCellDef ngClass='w-100 text-center'>
     </mat-header-cell>
-    <mat-cell *matCellDef="let room" [ngClass]="'w-100 text-center'">
+    <mat-cell *matCellDef="let room" ngClass='w-100 text-center'>
       <button mat-button class="mat-raised-button mat-primary"  [disabled]="!isAuthenticated"
               (click)="editRoom(room)">Edit</button>
     </mat-cell>
@@ -56,9 +55,9 @@
 
 
   <ng-container matColumnDef="delete">
-    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'">
+    <mat-header-cell  *matHeaderCellDef ngClass='w-100 text-center'>
     </mat-header-cell>
-    <mat-cell *matCellDef="let room" [ngClass]="'w-100 text-center'">
+    <mat-cell *matCellDef="let room" ngClass='w-100 text-center'>
       <button mat-button class="mat-raised-button mat-accent"  [disabled]="!isAuthenticated"
               (click)="deleteRoom(room)">Delete</button>
     </mat-cell>

@@ -46,7 +46,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.dataSource = new CourseDatasource(this.courseService);
-    this.dataSource.loadCourses('', 'name','asc', '0', '15');
+    this.dataSource.loadCourses('', 'name','asc', '0', '12');
     this.$subscription.add(
         this.dataSource.numCourses$.subscribe(
             count => this.numCourses = count

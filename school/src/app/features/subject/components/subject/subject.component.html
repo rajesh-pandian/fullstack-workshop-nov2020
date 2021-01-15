@@ -31,19 +31,19 @@
             matSortActive="name" matSortDirection="asc" matSortDisableClear>
 
   <ng-container matColumnDef="id">
-    <mat-header-cell *matHeaderCellDef [ngClass]="'w-75'" mat-sort-header>#</mat-header-cell>
-    <mat-cell *matCellDef="let subject" [ngClass]="'w-75'">{{subject.id}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-75' mat-sort-header>#</mat-header-cell>
+    <mat-cell *matCellDef="let subject" ngClass='w-75'>{{subject.id}}</mat-cell>
   </ng-container>
 
    <ng-container matColumnDef="description">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
-    <mat-cell *matCellDef="let subject">{{subject.description}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-300' mat-sort-header>Description</mat-header-cell>
+    <mat-cell *matCellDef="let subject" ngClass='w-300' >{{subject.description}}</mat-cell>
   </ng-container>
 
 
   <ng-container matColumnDef="edit">
-    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'"> </mat-header-cell>
-    <mat-cell *matCellDef="let subject" [ngClass]="'w-100 text-center'">
+    <mat-header-cell  *matHeaderCellDef ngClass='w-100 text-center'> </mat-header-cell>
+    <mat-cell *matCellDef="let subject" ngClass='w-100 text-center'>
       <button mat-button class="mat-raised-button mat-primary text-center"  [disabled]="!isAuthenticated"
        (click)="editSubject(subject)"   >Edit</button>
     </mat-cell>
@@ -51,8 +51,8 @@
 
 
   <ng-container matColumnDef="delete">
-    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'"> </mat-header-cell>
-    <mat-cell *matCellDef="let subject" [ngClass]="'w-100 text-center'">
+    <mat-header-cell  *matHeaderCellDef ngClass='w-100 text-center'> </mat-header-cell>
+    <mat-cell *matCellDef="let subject" ngClass='w-100 text-center'>
       <button mat-button class="mat-raised-button mat-accent"   [disabled]="!isAuthenticated"
        (click)="deleteSubject(subject)" >Delete</button>
     </mat-cell>
@@ -62,9 +62,10 @@
 
   <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
 
-
 </mat-table>
 
-<mat-paginator  [length]="numSubjects"  [pageSize]="15"
-                [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
+<div class="paginator">
+  <mat-paginator  [length]="numSubjects"  [pageSize]="12"
+                  [pageSizeOptions]="[5, 10, 12]"></mat-paginator>
 
+</div>
