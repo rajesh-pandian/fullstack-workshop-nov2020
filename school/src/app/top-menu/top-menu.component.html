@@ -59,7 +59,7 @@
     <span>Student Courses</span>
   </button>
 
-  <button mat-menu-item routerLink="/subjects">
+  <button mat-menu-item routerLink="/subjects" *ngIf="isAuthenticated">
     <mat-icon>article</mat-icon>
     <span>Subjects</span>
   </button>
