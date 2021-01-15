@@ -10,6 +10,7 @@ import {StudentCourseService} from "../../../../shared/services/student-course.s
 import {ConfirmDialogComponent} from "../../../../shared/dialogs/confirm-dialog/confirm-dialog.component";
 import {StudentCourseDatasource} from "../../../../shared/services/student-course.datasource";
 import {MatPaginator} from "@angular/material/paginator";
+import {AuthService} from "../../../../shared/services/auth.service";
 
 @Component({
   selector: 'app-student-course',
@@ -36,7 +37,10 @@ export class StudentCourseComponent implements OnInit, AfterViewInit, OnDestroy 
 
   displayedColumns = [  "name", "studentLastName", "edit", "delete" ]
 
+  isAuthenticated: boolean = false;
+
   constructor(private studentCourseService: StudentCourseService,
+              private authService: AuthService,
               private dialog: MatDialog) {
 
   }
@@ -48,6 +52,15 @@ export class StudentCourseComponent implements OnInit, AfterViewInit, OnDestroy 
       this.dataSource.numStudentCourses$.subscribe(
         count => this.numStudentCourses = count
       )
+    );
+
+    this.$subscription.add(
+      this.authService.authStatusChanges()
+        .subscribe(
+          authenticated => {
+            this.isAuthenticated = authenticated;
+          }
+        )
     );
   }
 
@@ -104,29 +117,31 @@ export class StudentCourseComponent implements OnInit, AfterViewInit, OnDestroy 
 
     const dialogRef =  this.dialog.open(StudentCourseDetailComponent, dialogConfig);
 
-    dialogRef.afterClosed()
-      .pipe(
-        tap(formVal => {
-         if (formVal) {
-           formVal.id = studentCourse.id;
-         }
-        }),
-        concatMap(formVal => {
-          if (formVal) {
-            return this.studentCourseService.updateStudentCourse(formVal);
-          } else {
-            return of({});
-          }
-        }),
-        catchError(val => of(`error caught: ${val}`))
-      )
-      .subscribe(
-        returnVal => {
-           if (returnVal['result'] === 'success') {
-             this.getStudentCourses();
+    this.$subscription.add(
+      dialogRef.afterClosed()
+        .pipe(
+          tap(formVal => {
+           if (formVal) {
+             formVal.id = studentCourse.id;
            }
-        }
-      )
+          }),
+          concatMap(formVal => {
+            if (formVal) {
+              return this.studentCourseService.updateStudentCourse(formVal);
+            } else {
+              return of({});
+            }
+          }),
+          catchError(val => of(`error caught: ${val}`))
+        )
+        .subscribe(
+          returnVal => {
+             if (returnVal['result'] === 'success') {
+               this.getStudentCourses();
+             }
+          }
+        )
+    );
   }
 
   createStudentCourse() {
@@ -138,24 +153,26 @@ export class StudentCourseComponent implements OnInit, AfterViewInit, OnDestroy 
 
     const dialogRef =  this.dialog.open(StudentCourseDetailComponent, dialogConfig);
 
-    dialogRef.afterClosed()
-      .pipe(
-        concatMap(formVal => {
-          if (formVal) {
-            return this.studentCourseService.createStudentCourse(formVal);
-          } else {
-            return of({});
+    this.$subscription.add(
+      dialogRef.afterClosed()
+        .pipe(
+          concatMap(formVal => {
+            if (formVal) {
+              return this.studentCourseService.createStudentCourse(formVal);
+            } else {
+              return of({});
+            }
+          }),
+          catchError(err => of(`error caught: ${err}`))
+        )
+        .subscribe(
+          returnVal => {
+            if (returnVal['result'] === 'success') {
+              this.getStudentCourses();
+            }
           }
-        }),
-        catchError(err => of(`error caught: ${err}`))
-      )
-      .subscribe(
-        returnVal => {
-          if (returnVal['result'] === 'success') {
-            this.getStudentCourses();
-          }
-        }
-      )
+        )
+    )
   }
 
   deleteStudentCourse(studentCourse: StudentCourse) {
@@ -167,16 +184,29 @@ export class StudentCourseComponent implements OnInit, AfterViewInit, OnDestroy 
         message: `You are about to delete  ${studentCourse.name}: ${studentCourse.studentFirstName} ${studentCourse.studentLastName}`}
     });
 
-    dialogRef.afterClosed().subscribe(dialogResult => {
-      if (dialogResult) {
-        this.studentCourseService.deleteStudentCourse(studentCourse.id)
-          .subscribe(
-            () => {
-              this.getStudentCourses();
+    this.$subscription.add(
+      dialogRef.afterClosed()
+        .pipe(
+          concatMap(dialogResult => {
+            if (dialogResult && dialogResult === true) {
+              return this.studentCourseService.deleteStudentCourse(studentCourse.id);
+            } else {
+              return of({'result': 'skipped'});
             }
+          }),
+          catchError(
+            err => { return of(`error caught: ${err}`) }
           )
-      }
-    });
+        )
+        .subscribe(
+          deletionResult => {
+            if (deletionResult && deletionResult.result && deletionResult.result === 'success') {
+              this.getStudentCourses()
+            }
+          },
+          error => console.log('error in deletion of student-course ', error)
+        )
+    );
 
   }
 

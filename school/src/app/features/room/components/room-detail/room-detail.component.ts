@@ -2,11 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Room} from "../../../../shared/models/room.model";
+import {Mode} from "../../../../shared/models/enums";
 
-enum Mode {
-  create,
-  edit
-}
 
 @Component({
   selector: 'app-room-detail',

@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {Observable, of} from "rxjs";
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Observable, of, Subscription} from "rxjs";
 import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {catchError, concatMap, tap} from "rxjs/operators";
@@ -8,7 +8,7 @@ import {MatSort} from "@angular/material/sort";
 import {StudentService} from "../../../../shared/services/student.service";
 import {Student} from "../../../../shared/models/student.model";
 import {StudentDeleteConfirmationComponent} from "../student-delete-confirmation/student-delete-confirmation.component";
-
+import {AuthService} from "../../../../shared/services/auth.service";
 
 
 @Component({
@@ -16,7 +16,7 @@ import {StudentDeleteConfirmationComponent} from "../student-delete-confirmation
   templateUrl: './student.component.html',
   styleUrls: ['./student.component.scss']
 })
-export class StudentComponent implements OnInit, AfterViewInit {
+export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort, { static: false })
   sort: MatSort;
@@ -28,29 +28,43 @@ export class StudentComponent implements OnInit, AfterViewInit {
   students$: Observable<Student[]>
   displayedColumns = ["id", "firstName", "lastName", "edit", "delete"]
 
-  constructor(private studentService: StudentService,
-              private dialog: MatDialog) {
+  $subscription = new Subscription();
+  isAuthenticated: boolean = false;
 
-  }
+  constructor(private studentService: StudentService,
+              private authService: AuthService,
+              private dialog: MatDialog) { }
 
   ngOnInit() {
     this.students$ = this.studentService.getStudents();
     this.getStudents();
+
+    this.$subscription.add(this.authService.authStatusChanges()
+      .subscribe(
+        authenticated => {
+          this.isAuthenticated = authenticated;
+        }
+      )
+    );
   }
 
   ngAfterViewInit() {
-    this.sort.sortChange.subscribe(() => {
-      this.dataSource.sortData(this.dataSource.data, this.sort);
-      this.matTable.renderRows();
-    });
+    this.$subscription.add(
+      this.sort.sortChange.subscribe(() => {
+        this.dataSource.sortData(this.dataSource.data, this.sort);
+        this.matTable.renderRows();
+      })
+    );
   }
 
   getStudents() {
-    this.students$.subscribe(
-      students => {
-        this.dataSource.data = students;
-      }
-    )
+    this.$subscription.add(
+      this.students$.subscribe(
+        students => {
+          this.dataSource.data = students;
+        }
+      )
+    );
   }
 
   searchStudents(search: string) {
@@ -65,29 +79,31 @@ export class StudentComponent implements OnInit, AfterViewInit {
 
     const dialogRef =  this.dialog.open(StudentDetailComponent, dialogConfig);
 
-    dialogRef.afterClosed()
-      .pipe(
-        tap(formVal => {
-          if (formVal) {
-            formVal.id = student.id;
+    this.$subscription.add(
+      dialogRef.afterClosed()
+        .pipe(
+          tap(formVal => {
+            if (formVal) {
+              formVal.id = student.id;
+            }
+          }),
+          concatMap(formVal => {
+            if (formVal) {
+              return this.studentService.updateStudent(formVal);
+            } else {
+              return of({});
+            }
+          }),
+          catchError(val => of(`error caught: ${val}`))
+        )
+        .subscribe(
+          returnVal => {
+            if (returnVal['result'] === 'success') {
+              this.getStudents();
+            }
           }
-        }),
-        concatMap(formVal => {
-          if (formVal) {
-            return this.studentService.updateStudent(formVal);
-          } else {
-            return of({});
-          }
-        }),
-        catchError(val => of(`error caught: ${val}`))
-      )
-      .subscribe(
-        returnVal => {
-          if (returnVal['result'] === 'success') {
-            this.getStudents();
-          }
-        }
-      )
+        )
+    );
   }
 
   createStudent() {
@@ -98,24 +114,26 @@ export class StudentComponent implements OnInit, AfterViewInit {
 
     const dialogRef =  this.dialog.open(StudentDetailComponent, dialogConfig);
 
-    dialogRef.afterClosed()
-      .pipe(
-        concatMap(formVal => {
-          if (formVal) {
-            return this.studentService.createStudent(formVal);
-          } else {
-            return of({});
+    this.$subscription.add(
+      dialogRef.afterClosed()
+        .pipe(
+          concatMap(formVal => {
+            if (formVal) {
+              return this.studentService.createStudent(formVal);
+            } else {
+              return of({});
+            }
+          }),
+          catchError(err => of(`error caught: ${err}`))
+        )
+        .subscribe(
+          returnVal => {
+            if (returnVal['result'] === 'success') {
+              this.getStudents();
+            }
           }
-        }),
-        catchError(err => of(`error caught: ${err}`))
-      )
-      .subscribe(
-        returnVal => {
-          if (returnVal['result'] === 'success') {
-            this.getStudents();
-          }
-        }
-      )
+        )
+    );
   }
 
   deleteStudent(student: Student) {
@@ -130,18 +148,34 @@ export class StudentComponent implements OnInit, AfterViewInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(dialogResult => {
-      if (dialogResult) {
-        this.studentService.deleteStudent(student.id)
-          .subscribe(
-            () => {
-              this.getStudents();
+    this.$subscription.add(
+      dialogRef.afterClosed()
+        .pipe(
+          concatMap(dialogResult => {
+            if (dialogResult && dialogResult === true) {
+              return this.studentService.deleteStudent(student.id);
+            } else {
+              return of({'result': 'skipped'});
             }
+          }),
+          catchError(
+            err => { return of(`error caught: ${err}`) }
           )
-      }
-    });
+        )
+        .subscribe(
+          deletionResult => {
+            if (deletionResult && deletionResult.result && deletionResult.result === 'success') {
+              this.getStudents()
+            }
+          },
+          error => console.log('error in deletion of student ', error)
+        )
+    );
 
+  }
 
+  ngOnDestroy() {
+    this.$subscription.unsubscribe();
   }
 
 }

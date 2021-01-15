@@ -1,5 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 
+.form-controls {
+  width: 50vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  mat-form-field {
+    input {
+      caret-color: white;
+    }
+  }
+}
+
+mat-dialog-content  {
+  mat-form-field {
+    .mat-input-element {
+      caret-color: white;
+    }
+  }
+}
+
+
 .w-75{
   max-width: 75px;
 }

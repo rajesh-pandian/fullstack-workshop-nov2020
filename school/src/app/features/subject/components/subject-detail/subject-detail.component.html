@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>{{instruction}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+  <mat-form-field >
+    <mat-label>description</mat-label>
+    <input matInput placeHolder="description" formControlName="description">
+    <mat-error *ngIf="form?.controls?.description?.errors?.required">Description is required.</mat-error>
+    <mat-error *ngIf="form?.controls?.description?.errors?.minLength">Minimum length is {{form.controls.description.errors.minLength.minLength}}.</mat-error>
+  </mat-form-field>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions>
+
+  <button class="mat-raised-button "
+          (click)="close()">
+    Close
+  </button>
+
+  <button  *ngIf="mode === modeEnum.edit"  class="mat-raised-button mat-primary"
+           (click)="save()">
+    Save
+  </button>
+
+  <button  *ngIf="mode === modeEnum.create"  class="mat-raised-button mat-primary"
+           (click)="create()">
+    Create
+  </button>
+
+
+</mat-dialog-actions>

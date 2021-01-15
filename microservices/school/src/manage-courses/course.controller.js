@@ -83,6 +83,18 @@ class CourseController {
         }
     }
 
+
+    countCoursesForTeacher= async (req, res) => {
+        try {
+            const teacherId = req.query;
+            const result = await this.courseService.countCoursesForTeacher(teacherId);
+            return res.json(result);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Courses for teacher' });
+        }
+    }
+
     retrieveAllCoursesForRoom= async (req, res) => {
         try {
             const roomId = req.query;
@@ -91,6 +103,17 @@ class CourseController {
         } catch (error) {
             console.error(error);
             return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Courses for room' });
+        }
+    }
+
+    countCoursesForSubject= async (req, res) => {
+        try {
+            const subjectId = req.query.id;
+            const result = await this.courseService.countCoursesForSubject(subjectId);
+            return res.json(result);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Courses for subject' });
         }
     }
 

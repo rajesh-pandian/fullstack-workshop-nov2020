@@ -66,12 +66,12 @@ class CourseMiddleware {
 
         if (!courseDetails.description || courseDetails.description.trim() === '') {
             isError = true;
-            errorList.push('Details cannot be Empty')
+            errorList.push('Description cannot be Empty')
         }
 
         if(!courseDetails.teacherId || courseDetails.teacherId < 0) {
             isError = true;
-            errorList.push('teacher Id cannot be undefined or less than 0')
+            errorList.push('Teacher Id cannot be undefined or less than 0')
         } else {
             const result = await this.courseService.retrieveTeacherById(courseDetails.teacherId);
             if (result && result.length === 0) {

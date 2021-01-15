@@ -1,0 +1,70 @@
+
+<h2>Subjects</h2>
+
+<ng-container *ngIf="!isAuthenticated">
+  <mat-error>Add, Edit and Delete are disabled when no user is logged in</mat-error>
+</ng-container>
+
+
+<ng-container class="search-add-outer">
+
+  <div class="search-add-inner">
+
+    <mat-form-field class="search-box" appearance="standard">
+      <input  matInput  [placeholder]="'search subjects'" #input>
+    </mat-form-field>
+
+    <button mat-button class="mat-raised-button mat-primary"  [disabled]="!isAuthenticated"
+     (click)="createSubject()"  >Add Subject</button>
+
+  </div>
+
+</ng-container>
+
+<div class="spinner-container" *ngIf="dataSource.loading$ | async">
+
+  <mat-spinner></mat-spinner>
+
+</div>
+
+<mat-table  class="lessons-table mat-elevation-z8" [dataSource]="dataSource" matSort
+            matSortActive="name" matSortDirection="asc" matSortDisableClear>
+
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef [ngClass]="'w-75'" mat-sort-header>#</mat-header-cell>
+    <mat-cell *matCellDef="let subject" [ngClass]="'w-75'">{{subject.id}}</mat-cell>
+  </ng-container>
+
+   <ng-container matColumnDef="description">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+    <mat-cell *matCellDef="let subject">{{subject.description}}</mat-cell>
+  </ng-container>
+
+
+  <ng-container matColumnDef="edit">
+    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'"> </mat-header-cell>
+    <mat-cell *matCellDef="let subject" [ngClass]="'w-100 text-center'">
+      <button mat-button class="mat-raised-button mat-primary text-center"  [disabled]="!isAuthenticated"
+       (click)="editSubject(subject)"   >Edit</button>
+    </mat-cell>
+  </ng-container>
+
+
+  <ng-container matColumnDef="delete">
+    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'"> </mat-header-cell>
+    <mat-cell *matCellDef="let subject" [ngClass]="'w-100 text-center'">
+      <button mat-button class="mat-raised-button mat-accent"   [disabled]="!isAuthenticated"
+       (click)="deleteSubject(subject)" >Delete</button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+
+</mat-table>
+
+<mat-paginator  [length]="numSubjects"  [pageSize]="15"
+                [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
+

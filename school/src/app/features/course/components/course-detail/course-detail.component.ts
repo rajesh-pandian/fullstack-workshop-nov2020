@@ -1,15 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {forkJoin, Observable} from "rxjs";
+import {forkJoin, Observable, Subscription} from "rxjs";
 import {Mode} from "../../../../shared/models/enums";
 import {CourseResolved} from "../../../../shared/models/course.model";
 import {TeacherService} from "../../../../shared/services/teacher.service";
 import {CourseTypeService} from "../../../../shared/services/courseType.service";
 import {Teacher} from "../../../../shared/models/teacher.model";
-import {StudentService} from "../../../../shared/services/student.service";
 import {RoomService} from "../../../../shared/services/room.service";
-import {Student} from "../../../../shared/models/student.model";
 import {CourseType} from "../../../../shared/models/courseType.model";
 import {Room} from "../../../../shared/models/room.model";
 
@@ -19,7 +17,7 @@ import {Room} from "../../../../shared/models/room.model";
   templateUrl: './course-detail.component.html',
   styleUrls: ['./course-detail.component.scss']
 })
-export class CourseDetailComponent implements OnInit {
+export class CourseDetailComponent implements OnInit, OnDestroy {
 
   instruction = "Add Course";
   mode = Mode.create;
@@ -30,20 +28,17 @@ export class CourseDetailComponent implements OnInit {
   teachers$: Observable<Teacher[]>;
   teachers: Teacher[] = [];
 
-  student$: Observable<Student[]>
-  students: Student[] = [];
-
   room$: Observable<Room[]>;
   rooms: Room[] = [];
 
   courseType$: Observable<CourseType[]>
   courseTypes: CourseType[] = [];
 
+  $subscription = new Subscription();
 
   constructor(@Inject(MAT_DIALOG_DATA) data: any,
               private fb: FormBuilder,
               private dialogRef: MatDialogRef<CourseDetailComponent>,
-              private studentService: StudentService,
               private teacherService: TeacherService,
               private roomService: RoomService,
               private courseTypeService: CourseTypeService) {
@@ -78,17 +73,16 @@ export class CourseDetailComponent implements OnInit {
 
   ngOnInit() {
     this.teachers$ = this.teacherService.getTeachers();
-    this.student$ = this.studentService.getStudents();
     this.room$ = this.roomService.getRooms();
     this.courseType$ = this.courseTypeService.getCourseTypes();
 
-    forkJoin([this.teachers$, this.student$, this.room$, this.courseType$])
-      .subscribe(results => {
-        [this.teachers, this.students, this.rooms, this.courseTypes] = results;
-      })
+    this.$subscription.add(
+      forkJoin([this.teachers$, this.room$, this.courseType$])
+        .subscribe(results => {
+          [this.teachers, this.rooms, this.courseTypes] = results;
+        })
+    );
   }
-
-
 
   close() {
     this.dialogRef.close();
@@ -104,6 +98,10 @@ export class CourseDetailComponent implements OnInit {
     if (this.form.valid) {
       this.dialogRef.close(this.form.value);
     }
+  }
+
+  ngOnDestroy() {
+    this.$subscription.unsubscribe();
   }
 
 }

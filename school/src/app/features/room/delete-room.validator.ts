@@ -10,19 +10,16 @@ export function deleteRoomValidator(courseService: CourseService): AsyncValidato
   return (control: AbstractControl) => {
 
     const roomId = control.value;
-    console.log(`in deleteTeacherValidator and the value of the control is ${roomId}`);
 
     return courseService.getCoursesForRoom(roomId)
       .pipe(
-        map(rooms => {
+        map(coursesUsingThisRoom => {
 
-          console.log('got some rooms ', rooms);
-
-          const courseWithRoom = rooms.find(
-            crs => crs.roomId == roomId );
-
-          return courseWithRoom ? {roomInUse: true} : null;
-
+          if (coursesUsingThisRoom && coursesUsingThisRoom.length > 0) {
+            return {roomInUse: true};
+          } else {
+            return null;
+          }
         })
       );
   };

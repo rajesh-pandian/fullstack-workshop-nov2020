@@ -8,6 +8,8 @@ import { TopMenuComponent } from './top-menu/top-menu.component';
 
 import {MatSortModule} from "@angular/material/sort";
 import {SharedModule} from "./shared/shared.module";
+import {AuthInterceptor} from "./shared/interceptors/auth.interceptor";
+import {HTTP_INTERCEPTORS} from "@angular/common/http";
 
 
 @NgModule({
@@ -19,12 +21,16 @@ import {SharedModule} from "./shared/shared.module";
       BrowserModule,
       AppRoutingModule,
       BrowserAnimationsModule,
-      SharedModule
+      SharedModule,
+
     ],
   entryComponents: [
 
   ],
-  providers: [],
+  providers: [
+     { provide: HTTP_INTERCEPTORS,  useClass: AuthInterceptor, multi: true }
+
+  ],
   bootstrap: [AppComponent],
   exports: [MatSortModule]
 })

@@ -1,6 +1,11 @@
 
 <h2>Student-Courses</h2>
 
+<ng-container *ngIf="!isAuthenticated">
+  <mat-error>Add, Edit and Delete are disabled when no user is logged in</mat-error>
+</ng-container>
+
+
 <ng-container class="search-add-outer">
 
   <div class="search-add-inner">
@@ -8,7 +13,7 @@
       <input  matInput  [placeholder]="'search student-courses'" #input >
     </mat-form-field>
 
-    <button mat-button class="mat-raised-button mat-primary"
+    <button mat-button class="mat-raised-button mat-primary" [disabled]="!isAuthenticated"
             (click)="createStudentCourse()">Add Student-Course</button>
   </div>
 
@@ -40,7 +45,7 @@
     <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'">
     </mat-header-cell>
     <mat-cell *matCellDef="let studentCourse" [ngClass]="'w-100 text-center'">
-      <button mat-button class="mat-raised-button mat-primary"
+      <button mat-button class="mat-raised-button mat-primary"   [disabled]="!isAuthenticated"
               (click)="editStudentCourse(studentCourse)">Edit</button>
     </mat-cell>
   </ng-container>
@@ -51,7 +56,7 @@
     <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'">
     </mat-header-cell>
     <mat-cell *matCellDef="let studentCourse" [ngClass]="'w-100 text-center'">
-      <button mat-button class="mat-raised-button mat-accent"
+      <button mat-button class="mat-raised-button mat-accent"   [disabled]="!isAuthenticated"
               (click)="deleteStudentCourse(studentCourse)">Delete</button>
     </mat-cell>
   </ng-container>

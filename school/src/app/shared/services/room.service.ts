@@ -8,7 +8,7 @@ import {Room} from "../models/room.model";
 })
 export class RoomService {
 
-  api = 'http://localhost:5000/fullstack/room';
+  api = '/api/fullstack/room';
 
   constructor(private http: HttpClient) {
 

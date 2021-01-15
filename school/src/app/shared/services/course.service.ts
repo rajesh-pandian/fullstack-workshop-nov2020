@@ -9,7 +9,7 @@ import {Observable} from "rxjs";
 })
 export class CourseService {
 
-  api = 'http://localhost:5000/fullstack/course';
+  api = '/api/fullstack/course';
 
   constructor(private http: HttpClient) {
 
@@ -64,9 +64,22 @@ export class CourseService {
       .pipe(catchError(this.handleError));
   }
 
+  countCoursesForTeacher(id) {
+    return this.http
+      .get(`${this.api}/countUsingTeacher?id=${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+
   getCoursesForRoom(id) {
     return this.http
       .get(`${this.api}/usingRoom?id=${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  countCoursesForSubject(id) {
+    return this.http
+      .get(`${this.api}/usingSubject?id=${id}`)
       .pipe(catchError(this.handleError));
   }
 

@@ -76,7 +76,6 @@ class StudentCourseController {
     retrieveStudentCoursesByStudentId= async (req, res) => {
         try {
             const studentCourseDetails = req.query;
-            console.log('studentCourseDetails are ', studentCourseDetails);
             const result = await this.studentCourseService.retrieveStudentCoursesByStudentId(studentCourseDetails);
             return res.json(result);
         } catch (error) {
@@ -88,7 +87,6 @@ class StudentCourseController {
     retrieveStudentCoursesByCourseId= async (req, res) => {
         try {
             const studentCourseDetails = req.query;
-            console.log('studentCourseDetails are ', studentCourseDetails);
             const result = await this.studentCourseService.retrieveStudentCoursesByCourseId(studentCourseDetails);
             return res.json(result);
         } catch (error) {

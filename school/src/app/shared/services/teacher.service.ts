@@ -10,7 +10,7 @@ import {Teacher} from "../models/teacher.model";
 })
 export class TeacherService {
 
-  api = 'http://localhost:5000/fullstack/teacher';
+  api = '/api/fullstack/teacher';
 
   constructor(private http: HttpClient) {
 
@@ -30,15 +30,13 @@ export class TeacherService {
       .pipe(catchError(this.handleError));
   }
 
-  deleteTeacher(teacher: Teacher) {
-    console.log('in delete teacher xxxx');
+  deleteTeacher(teacherId: number) {
     return this.http
-      .delete(`${this.api}/delete/${teacher.id}`)
+      .delete(`${this.api}/delete/${teacherId}`)
       .pipe(catchError(this.handleError));
   }
 
   updateTeacher(teacher: Teacher) {
-    console.log('in updateteacher xxxx');
     return this.http
       .put(`${this.api}/update/${teacher.id}`, teacher)
       .pipe(catchError(this.handleError));

@@ -295,8 +295,20 @@ class CourseService {
         ORDER BY course.name;
     `;
 
+    COUNT_COURSES_FOR_SUBJECT = `
+        SELECT COUNT(*) as count,
+        course.subject_id
+        FROM course
+        WHERE course.subject_id = ?;
+   `;
 
 
+    COUNT_COURSES_FOR_TEACHER = `
+        SELECT COUNT(*) as count,
+        course.teacher_id
+        FROM course
+        WHERE course.teacher_id = ?;
+   `;
 
     INSERT_COURSE = `
         INSERT INTO course (name, subject_id, description, teacher_id, room_id) VALUES(?,?,?,?,?);
@@ -443,6 +455,17 @@ class CourseService {
     }
 
 
+    async countCoursesForTeacher({id}) {
+        try {
+            const result = await this.databaseService.query(this.COUNT_COURSES_FOR_TEACHER, [ id ]);
+            let { count } = result[0];
+            return count;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     async retrieveAllCoursesForRoom({id}) {
         try {
             const result = await this.databaseService.query(this.SELECT_ALL_COURSE_FOR_ROOM, [ id ]);
@@ -453,7 +476,16 @@ class CourseService {
         }
     }
 
-
+    async countCoursesForSubject(id) {
+        try {
+            const result = await this.databaseService.query(this.COUNT_COURSES_FOR_SUBJECT, [ id ]);
+            let { count } = result[0];
+            return count;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 
 
    async retrieveCourse({ name }) {

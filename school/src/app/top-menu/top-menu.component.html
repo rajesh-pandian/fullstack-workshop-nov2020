@@ -1,9 +1,30 @@
+<div class='menu-container'>
+  <div class='menu'>
 
-<button mat-icon-button [mat-menu-trigger-for]="menu">
+    <div class='links'>
+      <button mat-icon-button [mat-menu-trigger-for]="menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <button mat-button title="create user" *ngIf="!isAuthenticated"  routerLink="/signup" >
+        create user
+      </button>
+      <button mat-button  title="login" *ngIf="!isAuthenticated"  routerLink="/login"  >
+       login
+      </button>
+      <button mat-button title="log out"  *ngIf="isAuthenticated"  (click)="logout()">
+        logout
+      </button>
+    </div>
 
-  <mat-icon>menu</mat-icon>
+    <div class="session" *ngIf="isAuthenticated">
+      session time remaining
+      {{(timeLeft$ | async)}}
+    </div>
 
-</button>
+
+  </div>
+</div>
+
 
 <mat-menu #menu>
 
@@ -38,6 +59,9 @@
     <span>Student Courses</span>
   </button>
 
-
+  <button mat-menu-item routerLink="/subjects">
+    <mat-icon>article</mat-icon>
+    <span>Subjects</span>
+  </button>
 
 </mat-menu>

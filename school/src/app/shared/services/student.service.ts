@@ -9,7 +9,7 @@ import {Student} from "../models/student.model";
 })
 export class StudentService {
 
-  api = 'http://localhost:5000/fullstack/student';
+  api = '/api/fullstack/student';
 
   constructor(private http: HttpClient) {
 

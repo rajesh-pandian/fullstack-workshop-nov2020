@@ -27,5 +27,6 @@ const routes: Routes = [
     CourseDetailComponent,
     CourseDeleteConfirmationComponent
   ]
+
 })
 export class CourseModule { }

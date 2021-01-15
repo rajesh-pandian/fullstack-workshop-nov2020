@@ -9,7 +9,7 @@ import {CourseType} from "../models/courseType.model";
 })
 export class CourseTypeService {
 
-  api = 'http://localhost:5000/fullstack/courseTypes';
+  api = '/api/fullstack/courseTypes';
 
   constructor(private http: HttpClient) {
 

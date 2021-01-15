@@ -1,20 +1,19 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {forkJoin, Observable} from "rxjs";
+import {forkJoin, Observable, Subscription} from "rxjs";
 import {CourseService} from "../../../../shared/services/course.service";
 import {Mode} from "../../../../shared/models/enums";
 import {StudentService} from "../../../../shared/services/student.service";
 import {Course, StudentCourse} from "../../../../shared/models/course.model";
 import {Student} from "../../../../shared/models/student.model";
 
-
 @Component({
   selector: 'app-student-course-detail',
   templateUrl: './student-course-detail.component.html',
   styleUrls: ['./student-course-detail.component.scss']
 })
-export class StudentCourseDetailComponent implements OnInit {
+export class StudentCourseDetailComponent implements OnInit, OnDestroy {
 
   instruction = "Add Student-Course";
   mode = Mode.create;
@@ -28,7 +27,7 @@ export class StudentCourseDetailComponent implements OnInit {
   student$: Observable<Student[]>
   students: Student[] = [];
 
-
+  $subscription = new Subscription();
 
   constructor(@Inject(MAT_DIALOG_DATA) data: any,
               private fb: FormBuilder,
@@ -62,10 +61,12 @@ export class StudentCourseDetailComponent implements OnInit {
     this.courses$ = this.courseService.getCourses();
     this.student$ = this.studentService.getStudents();
 
-    forkJoin([this.courses$, this.student$])
-      .subscribe(results => {
-        [this.courses, this.students] = results;
-      })
+    this.$subscription.add(
+      forkJoin([this.courses$, this.student$])
+        .subscribe(results => {
+          [this.courses, this.students] = results;
+        })
+    );
   }
 
   close() {
@@ -82,6 +83,10 @@ export class StudentCourseDetailComponent implements OnInit {
     if (this.form.valid) {
       this.dialogRef.close(this.form.value);
     }
+  }
+
+  ngOnDestroy() {
+    this.$subscription.unsubscribe();
   }
 
 }

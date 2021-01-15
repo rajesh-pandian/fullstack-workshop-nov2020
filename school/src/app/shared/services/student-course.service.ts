@@ -9,12 +9,11 @@ import {Observable} from "rxjs";
 })
 export class StudentCourseService {
 
-  api = 'http://localhost:5000/fullstack/studentCourse';
+  api = '/api/fullstack/studentCourse';
 
   constructor(private http: HttpClient) {
 
   }
-
 
   getStudentCourses() {
     return this.http
@@ -79,7 +78,9 @@ export class StudentCourseService {
   deleteStudentCourse(id: number) {
     return this.http
       .delete(`${this.api}/delete/${id}`)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
   updateStudentCourse(studentCourse: StudentCourse) {
@@ -91,7 +92,7 @@ export class StudentCourseService {
 
   searchStudentCourseByStudentId(id: number) {
     return this.http
-      .get<StudentCourse[]>(`${this.api}/searchByStudent?student_id=${id}`)
+      .get<StudentCourse[]>(`${this.api}/searchByStudent?studentId=${id}`)
       .pipe(catchError(this.handleError));
   }
 

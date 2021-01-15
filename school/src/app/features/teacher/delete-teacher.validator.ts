@@ -10,19 +10,16 @@ export function deleteTeacherValidator(courseService: CourseService): AsyncValid
   return (control: AbstractControl) => {
 
     const teacherId = control.value;
-    console.log(`in deleteTeacherValidator and the value of the control is ${teacherId}`);
 
-    return courseService.getCoursesForTeacher(teacherId)
+    return courseService.countCoursesForTeacher(teacherId)
       .pipe(
-        map(courses => {
+        map(coursesForThisTeacher => {
 
-          console.log('got some courses ', courses);
-
-          const courseWithTeacher = courses.find(
-            crs => crs.teacherId == teacherId );
-
-          return courseWithTeacher ? {teacherInUse: true} : null;
-
+          if (coursesForThisTeacher && coursesForThisTeacher > 0) {
+            return {teacherInUse: true};
+          } else {
+            return null;
+          }
         })
       );
   };

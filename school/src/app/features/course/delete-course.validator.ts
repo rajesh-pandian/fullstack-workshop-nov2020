@@ -9,19 +9,16 @@ export function deleteCourseValidator(studentCourseService: StudentCourseService
   return (control: AbstractControl) => {
 
     const courseId = control.value;
-    console.log(`in deleteCourseValidator and the value of the control is ${courseId}`);
 
     return studentCourseService.searchStudentCourseByCourseId(courseId)
       .pipe(
         map(studentCourses => {
 
-          console.log('got some studentCourses ', studentCourses);
-
-          const studentCourseWithStudent = studentCourses.find(
-            crs => crs.course_id === courseId );
-
-          return studentCourseWithStudent ? {courseInUse: true} : null;
-
+          if(studentCourses && studentCourses.length > 0) {
+            return {courseInUse: true}
+          } else {
+            return null;
+          }
         })
       );
   };

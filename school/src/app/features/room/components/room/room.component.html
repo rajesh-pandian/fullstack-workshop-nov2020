@@ -1,6 +1,10 @@
 
 <h2>Rooms</h2>
 
+<ng-container *ngIf="!isAuthenticated">
+  <mat-error>Add, Edit and Delete are disabled when no user is logged in</mat-error>
+</ng-container>
+
 <ng-container class="search-add-outer">
 
   <div class="search-add-inner">
@@ -13,7 +17,7 @@
 
     </mat-form-field>
 
-    <button mat-button class="mat-raised-button mat-primary"
+    <button mat-button class="mat-raised-button mat-primary"  [disabled]="!isAuthenticated"
             (click)="createRoom()">Add Room</button>
 
   </div>
@@ -44,7 +48,7 @@
     <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'">
     </mat-header-cell>
     <mat-cell *matCellDef="let room" [ngClass]="'w-100 text-center'">
-      <button mat-button class="mat-raised-button mat-primary"
+      <button mat-button class="mat-raised-button mat-primary"  [disabled]="!isAuthenticated"
               (click)="editRoom(room)">Edit</button>
     </mat-cell>
   </ng-container>
@@ -55,7 +59,7 @@
     <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'">
     </mat-header-cell>
     <mat-cell *matCellDef="let room" [ngClass]="'w-100 text-center'">
-      <button mat-button class="mat-raised-button mat-accent"
+      <button mat-button class="mat-raised-button mat-accent"  [disabled]="!isAuthenticated"
               (click)="deleteRoom(room)">Delete</button>
     </mat-cell>
   </ng-container>
