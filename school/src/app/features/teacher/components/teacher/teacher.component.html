@@ -24,9 +24,7 @@
 
 
 <div class="spinner-container" *ngIf="dataSource.loading$ | async">
-
   <mat-spinner></mat-spinner>
-
 </div>
 
 <mat-table  class="lessons-table mat-elevation-z8" [dataSource]="this.dataSource" matSort>

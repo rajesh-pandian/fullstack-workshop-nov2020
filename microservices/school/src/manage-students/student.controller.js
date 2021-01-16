@@ -60,7 +60,28 @@ class StudentController {
             console.error(error);
             return res.status(500).json({ status: 'Failed', message: 'Error retrieve Student' });
         }
-    } 
+    }
+
+    retrieveStudentsFiltered= async (req, res) => {
+        try {
+            const result = await this.studentService.retrieveStudentsFiltered(req.query);
+            return res.json(result);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving filtered Students' });
+        }
+    }
+
+    countStudents= async (req, res) => {
+        try {
+            const result = await this.studentService.countStudents(req.query.filter);
+            return res.json(result);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving count of filtered Students' });
+        }
+    }
+
 }
 
 module.exports = StudentController;

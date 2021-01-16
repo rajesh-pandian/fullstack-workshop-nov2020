@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {catchError} from "rxjs/operators";
-import {Teacher} from "../models/teacher.model";
 import {Student} from "../models/student.model";
+import {Subject} from "../models/subject.model";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,42 @@ export class StudentService {
     return this.http
       .get(`${this.api}/all`)
       .pipe(catchError(this.handleError));
+  }
+
+
+  getStudentsFiltered(filter: string,
+                      sortField: string,
+                      sortDirection: string,
+                      pageIndex: string,
+                      pageSize: string) {
+
+    return this.http
+      .get<Subject[]>(`${this.api}/filtered`, {
+        params: new HttpParams()
+          .set('filter', filter)
+          .set('sortField', sortField)
+          .set('sortOrder', sortDirection)
+          .set('pageIndex', pageIndex)
+          .set('pageSize', pageSize),
+        headers: new HttpHeaders()
+          .set('Cache-Control', 'no-cache')
+      })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  countStudents(filter: string): Observable<number> {
+    return this.http
+      .get<number>(`${this.api}/count`, {
+        params: new HttpParams()
+          .set('filter', filter),
+        headers: new HttpHeaders()
+          .set('Cache-Control', 'no-cache')
+      })
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
   createStudent(student: Student) {

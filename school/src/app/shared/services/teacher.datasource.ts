@@ -29,9 +29,6 @@ export class TeacherDatasource implements DataSource<Teacher> {
                      pageIndex: string,
                      pageSize: string) {
 
-    console.log(`in loadteachers`);
-
-
     let count = 0;
     let teachers: Teacher[] = [];
 

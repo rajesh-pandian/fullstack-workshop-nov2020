@@ -10,6 +10,8 @@ const userMiddleware = new UserMiddleware();
 
 router.get('/all', studentController.retrieveAllStudents);
 router.get('/search', studentController.retrieveStudent);
+router.get('/filtered', studentController.retrieveStudentsFiltered);
+router.get('/count', studentController.countStudents);
 router.post('/create', userMiddleware.checkAuth, studentMiddleware.validateCreate, studentController.createStudent);
 router.put('/update/:studentId', userMiddleware.checkAuth, studentMiddleware.validateUpdate, studentController.updateStudent);
 router.delete('/delete/:studentId', userMiddleware.checkAuth, studentMiddleware.validateDelete, studentController.deleteStudent);

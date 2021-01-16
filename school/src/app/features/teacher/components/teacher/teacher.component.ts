@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {fromEvent, merge, Observable, of, Subscription} from "rxjs";
-import {MatTable, MatTableDataSource} from "@angular/material/table";
+import {fromEvent, merge, of, Subscription} from "rxjs";
+import {MatTable} from "@angular/material/table";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {TeacherDetailComponent} from "../teacher-detail/teacher-detail.component";
 import {catchError, concatMap, debounceTime, distinctUntilChanged, tap} from "rxjs/operators";

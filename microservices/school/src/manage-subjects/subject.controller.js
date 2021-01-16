@@ -68,7 +68,7 @@ class SubjectController {
             return res.json(result);
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: 'Failed', message: 'Error retrieving count of filteredSubjects' });
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving count of filtered Subjects' });
         }
     }
 
