@@ -21,17 +21,102 @@ class TeacherService {
         SELECT id, first_name, last_name FROM teacher where last_name like ?;
     `;
 
+    SELECT_TEACHER_FILTERED_LASTNAME_ASC = `
+        SELECT
+          id, 
+          first_name as firstName, 
+          last_name as lastName
+        FROM teacher
+        WHERE last_name like ?
+        ORDER BY last_name asc
+        LIMIT ?, ?;
+    `;
+
+    SELECT_TEACHER_FILTERED_LASTNAME_DESC = `
+        SELECT
+          id, 
+          first_name as firstName, 
+          last_name as lastName
+        FROM teacher
+        WHERE last_name like ?
+        ORDER BY last_name desc
+        LIMIT ?, ?;
+    `;
+
+    SELECT_TEACHER_FILTERED_FIRSTNAME_ASC = `
+        SELECT
+          id, 
+          first_name as firstName, 
+          last_name as lastName
+        FROM teacher
+        WHERE last_name like ?
+        ORDER BY first_name asc
+        LIMIT ?, ?;
+    `;
+
+    SELECT_TEACHER_FILTERED_FIRSTNAME_DESC = `
+        SELECT
+          id, 
+          first_name as firstName, 
+          last_name as lastName
+        FROM teacher
+        WHERE last_name like ?
+        ORDER BY first_name desc
+        LIMIT ?, ?;
+    `;
+
+    SELECT_TEACHER_FILTERED_ID_ASC = `
+        SELECT
+          id, 
+          first_name as firstName, 
+          last_name as lastName
+        FROM teacher
+        WHERE last_name like ?
+        ORDER BY id asc
+        LIMIT ?, ?;
+    `;
+
+    SELECT_TEACHER_FILTERED_ID_DESC = `
+        SELECT
+          id, 
+          first_name as firstName, 
+          last_name as lastName
+        FROM teacher
+        WHERE last_name like ?
+        ORDER BY id desc
+        LIMIT ?, ?;
+    `;
+
     SELECT_TEACHER_BY_ID = `
         SELECT first_name, last_name FROM teacher where id = ?;
     `;
+
+    COUNT_TEACHERS = `SELECT
+            COUNT(*) as count,
+            teacher.last_name
+            FROM teacher
+            where teacher.last_name like ?
+            
+            ;`;
 
     constructor() {
         this.databaseService = new DatabaseService();
     }
 
+    async countTeachers(filter) {
+        try {
+            const result = await this.databaseService.query(this.COUNT_TEACHERS, [`%${filter}%`] );
+            let { count } = result[0];
+            return count;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+
     async createTeacher({ firstName, lastName }) {
         try {
-            console.log('in teacher service, createTeacher, params are ', firstName, lastName);
             const { insertId } = await this.databaseService.query(this.INSERT_TEACHER,
                 [ firstName, lastName ]);
       
@@ -79,6 +164,41 @@ class TeacherService {
             console.error(error);
             throw error;
           }
+    }
+
+    async retrieveTeachersFiltered( {filter, sortField, sortOrder, pageIndex, pageSize } ) {
+        try {
+
+            const startItem = +(pageIndex * pageSize);
+            const pageSz = parseInt(pageSize, 10);
+
+            let queryString = this.SELECT_TEACHER_FILTERED_LASTNAME_ASC;
+
+            if (sortField === 'lastName') {
+                if (sortOrder === 'desc') {
+                    queryString = this.SELECT_TEACHER_FILTERED_LASTNAME_DESC;
+                }
+            } else if (sortField === 'firstName') {
+                queryString = this.SELECT_TEACHER_FILTERED_FIRSTNAME_ASC
+                if (sortOrder === 'desc') {
+                    queryString = this.SELECT_TEACHER_FILTERED_FIRSTNAME_DESC
+                }
+            } else {
+                queryString = this.SELECT_TEACHER_FILTERED_ID_ASC;
+                if (sortOrder === 'desc') {
+                    queryString = this.SELECT_TEACHER_FILTERED_ID_DESC;
+                }
+            }
+
+            const result = await this.databaseService.query(queryString,
+                [ `%${filter}%`, startItem,  pageSz ]);
+
+
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
 
     async retrieveTeacher({ last_name }) {

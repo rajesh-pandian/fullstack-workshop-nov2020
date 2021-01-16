@@ -1,14 +1,16 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Observable, of, Subscription} from "rxjs";
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {fromEvent, merge, Observable, of, Subscription} from "rxjs";
 import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {TeacherDetailComponent} from "../teacher-detail/teacher-detail.component";
-import {catchError, concatMap, tap} from "rxjs/operators";
+import {catchError, concatMap, debounceTime, distinctUntilChanged, tap} from "rxjs/operators";
 import {MatSort} from "@angular/material/sort";
 import {TeacherService} from "../../../../shared/services/teacher.service";
 import {Teacher} from "../../../../shared/models/teacher.model";
 import {TeacherDeleteConfirmationComponent} from "../teacher-delete-confirmation/teacher-delete-confirmation.component";
 import {AuthService} from "../../../../shared/services/auth.service";
+import {TeacherDatasource} from "../../../../shared/services/teacher.datasource";
+import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-teacher',
@@ -23,8 +25,15 @@ export class TeacherComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatTable, { static: false })
   matTable: MatTable<any>;
 
-  dataSource = new MatTableDataSource([]);
-  teachers$: Observable<Teacher[]>
+  @ViewChild(MatPaginator, { static: false })
+  paginator: MatPaginator;
+
+  @ViewChild('input', { static: false })
+  input: ElementRef;
+
+  dataSource: TeacherDatasource;
+  numTeachers = 100;
+
   displayedColumns = ["id", "firstName", "lastName", "edit", "delete"]
 
   $subscription = new Subscription();
@@ -34,9 +43,16 @@ export class TeacherComponent implements OnInit, AfterViewInit, OnDestroy {
               private authService: AuthService,
               private dialog: MatDialog) { }
 
+
   ngOnInit() {
-    this.teachers$ = this.teacherService.getTeachers();
-    this.getTeachers();
+
+    this.dataSource = new TeacherDatasource(this.teacherService);
+    this.dataSource.loadTeachers('', 'lastName', 'asc', '0', '12');
+    this.$subscription.add(
+      this.dataSource.numTeachers$.subscribe(
+        count => this.numTeachers = count
+      )
+    );
 
     this.$subscription.add(this.authService.authStatusChanges()
       .subscribe(
@@ -49,26 +65,44 @@ export class TeacherComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.$subscription.add(
-      this.sort.sortChange.subscribe(() => {
-        this.dataSource.sortData(this.dataSource.data, this.sort);
-        this.matTable.renderRows();
-      })
+      this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0)
+    );
+
+    this.$subscription.add(
+      fromEvent(this.input.nativeElement,'keyup')
+        .pipe(
+          debounceTime(350),
+          distinctUntilChanged(),
+          tap(() => {
+            this.paginator.pageIndex = 0;
+            this.getTeachers();
+          })
+        )
+        .subscribe()
+    );
+
+    this.$subscription.add(
+      merge(this.paginator.page, this.sort.sortChange)
+        .pipe(
+          tap(() => {
+              this.getTeachers();
+            }
+          )
+        )
+        .subscribe()
     );
   }
 
   getTeachers() {
-    this.$subscription.add(
-      this.teachers$.subscribe(
-        teachers => {
-          this.dataSource.data = teachers;
-        }
-      )
+    this.dataSource.loadTeachers(
+      this.input.nativeElement.value,
+      this.sort.active,
+      this.sort.direction,
+      this.paginator.pageIndex.toString(),
+      this.paginator.pageSize.toString()
     );
   }
 
-  searchTeachers(search: string) {
-    this.dataSource.filter = search.toLowerCase().trim();
-  }
 
   editTeacher(teacher: Teacher) {
 

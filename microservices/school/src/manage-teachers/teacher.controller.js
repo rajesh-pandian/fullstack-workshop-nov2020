@@ -17,7 +17,6 @@ class TeacherController {
     } 
 
     updateTeacher= async (req, res) => {
-        console.log('in update teacher');
         try {
             const teacherId = req.params.teacherId
             const teacherDetails = req.body;
@@ -48,12 +47,34 @@ class TeacherController {
             console.error(error);
             return res.status(500).json({ status: 'Failed', message: 'Error retrieving all Teachers' });
         }
-    } 
+    }
+
+
+    retrieveTeachersFiltered= async (req, res) => {
+        try {
+            const result = await this.teacherService.retrieveTeachersFiltered(req.query);
+            return res.json(result);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving filtered StudentCourse' });
+        }
+    }
+
+
+
+    countTeachers= async (req, res) => {
+        try {
+            const result = await this.teacherService.countTeachers(req.query.filter);
+            return res.json(result);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'Failed', message: 'Error retrieving count of teachers' });
+        }
+    }
 
     retrieveTeacher= async (req, res) => {
         try {
             const teacherDetails = req.query;
-            console.log('teacher details are ', teacherDetails);
             const result = await this.teacherService.retrieveTeacher(teacherDetails);
             return res.json(result);
         } catch (error) {

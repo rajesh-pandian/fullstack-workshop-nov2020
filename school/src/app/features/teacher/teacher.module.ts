@@ -5,6 +5,8 @@ import {RouterModule, Routes} from "@angular/router";
 import {SharedModule} from "../../shared/shared.module";
 import { TeacherDeleteConfirmationComponent } from './components/teacher-delete-confirmation/teacher-delete-confirmation.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 const routes: Routes = [
   { path: '', component: TeacherComponent }
@@ -20,7 +22,9 @@ const routes: Routes = [
   imports: [
     SharedModule,
     RouterModule.forChild(routes),
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule
   ],
   entryComponents: [
     TeacherDetailComponent,

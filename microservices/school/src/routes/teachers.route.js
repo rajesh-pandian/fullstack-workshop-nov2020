@@ -9,6 +9,8 @@ const teacherMiddleware = new TeacherMiddleware();
 const userMiddleware = new UserMiddleware();
 
 router.get('/all', teacherController.retrieveAllTeachers);
+router.get('/filtered', teacherController.retrieveTeachersFiltered);
+router.get('/count', teacherController.countTeachers);
 router.get('/search', teacherController.retrieveTeacher);
 router.post('/create', userMiddleware.checkAuth, teacherMiddleware.validateCreate, teacherController.createTeacher);
 router.put('/update/:teacherId', userMiddleware.checkAuth, teacherMiddleware.validateUpdate, teacherController.updateTeacher);
