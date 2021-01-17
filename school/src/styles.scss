@@ -22,12 +22,20 @@ mat-dialog-content  {
 }
 
 
+.entity-search-input {
+  padding-left: 8px;
+}
+
 .w-75{
   max-width: 75px;
 }
 
 .w-100{
   max-width: 100px;
+}
+
+.w-250{
+  max-width: 250px;
 }
 
 .w-300{
@@ -63,9 +71,7 @@ mat-dialog-content  {
 }
 
 .search-add-outer {
-
   display: flex;
-  //justify-content: space-between;
 }
 
 
@@ -78,10 +84,22 @@ mat-dialog-content  {
 
 .search-add-inner button {
   max-height: 3em;
-  margin-right: 45px;
+  //margin-right: 45px;
 }
 
 .paginator {
   display: flex;
   align-items: flex-start;
+}
+
+.spinner-container {
+  height: 360px;
+  width: 390px;
+  position: fixed;
+}
+
+
+.entity-table {
+  min-height: 360px;
+  margin-top: 10px;
 }

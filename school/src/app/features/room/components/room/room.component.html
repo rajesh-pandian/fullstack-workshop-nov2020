@@ -9,11 +9,9 @@
 
   <div class="search-add-inner">
 
-    <mat-form-field  appearance="standard">
-
+    <mat-form-field  class="entity-search-input" appearance="standard">
       <input  matInput  [placeholder]="'search rooms'" #input
               (keyup)="searchRooms(input.value)">
-
     </mat-form-field>
 
     <button mat-button class="mat-raised-button mat-primary"  [disabled]="!isAuthenticated"
@@ -24,7 +22,7 @@
 </ng-container>
 
 
-<mat-table  class="lessons-table mat-elevation-z8" [dataSource]="dataSource" matSort>
+<mat-table  class="entity-table mat-elevation-z8" [dataSource]="dataSource" matSort>
 
 
   <ng-container matColumnDef="id">

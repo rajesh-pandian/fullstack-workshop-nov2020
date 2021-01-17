@@ -9,7 +9,7 @@
 
   <div class="search-add-inner">
 
-    <mat-form-field class="search-box" appearance="standard">
+    <mat-form-field class="entity-search-input" appearance="standard">
       <input  matInput  [placeholder]="'search courses'" #input>
     </mat-form-field>
 
@@ -26,37 +26,37 @@
 
 </div>
 
-<mat-table  class="lessons-table mat-elevation-z8" [dataSource]="dataSource" matSort
+<mat-table  class="entity-table mat-elevation-z8" [dataSource]="dataSource" matSort
             matSortActive="name" matSortDirection="asc" matSortDisableClear>
 
   <ng-container matColumnDef="id">
-    <mat-header-cell *matHeaderCellDef [ngClass]="'w-75'" mat-sort-header>#</mat-header-cell>
-    <mat-cell *matCellDef="let course" [ngClass]="'w-75'">{{course.id}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-75' mat-sort-header>#</mat-header-cell>
+    <mat-cell *matCellDef="let course" ngClass='w-75'>{{course.id}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-    <mat-cell *matCellDef="let course">{{course.name}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-250'  mat-sort-header>Name</mat-header-cell>
+    <mat-cell *matCellDef="let course" ngClass='w-250' >{{course.name}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="description">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
-    <mat-cell *matCellDef="let course">{{course.description}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-400'  mat-sort-header>Description</mat-header-cell>
+    <mat-cell *matCellDef="let course" ngClass='w-400' >{{course.description}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="roomName">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Room</mat-header-cell>
-    <mat-cell *matCellDef="let course">{{course.roomName}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-250'  mat-sort-header>Room</mat-header-cell>
+    <mat-cell *matCellDef="let course" ngClass='w-250' >{{course.roomName}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="teacherLastName">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Teacher</mat-header-cell>
-    <mat-cell *matCellDef="let course">{{course.teacherFirstName}} {{course.teacherLastName}}</mat-cell>
+    <mat-header-cell *matHeaderCellDef ngClass='w-250' mat-sort-header>Teacher</mat-header-cell>
+    <mat-cell *matCellDef="let course" ngClass='w-250' >{{course.teacherFirstName}} {{course.teacherLastName}}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="edit">
-    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'"> </mat-header-cell>
-    <mat-cell *matCellDef="let course" [ngClass]="'w-100 text-center'">
+    <mat-header-cell  *matHeaderCellDef ngClass='w-100 text-center'> </mat-header-cell>
+    <mat-cell *matCellDef="let course" ngClass='w-100 text-center'>
       <button mat-button class="mat-raised-button mat-primary text-center" [disabled]="!isAuthenticated"
               (click)="editCourse(course)">Edit</button>
     </mat-cell>
@@ -64,8 +64,8 @@
 
 
   <ng-container matColumnDef="delete">
-    <mat-header-cell  *matHeaderCellDef [ngClass]="'w-100 text-center'"> </mat-header-cell>
-    <mat-cell *matCellDef="let course" [ngClass]="'w-100 text-center'">
+    <mat-header-cell  *matHeaderCellDef ngClass='w-100 text-center'> </mat-header-cell>
+    <mat-cell *matCellDef="let course" ngClass='w-100 text-center'>
       <button mat-button class="mat-raised-button mat-accent"  [disabled]="!isAuthenticated"
               (click)="deleteCourse(course)">Delete</button>
     </mat-cell>

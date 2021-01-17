@@ -9,7 +9,7 @@
 <ng-container class="search-add-outer">
 
   <div class="search-add-inner">
-    <mat-form-field  appearance="standard">
+    <mat-form-field  class="entity-search-input" appearance="standard">
       <input  matInput  [placeholder]="'search student-courses'" #input >
     </mat-form-field>
 
@@ -26,7 +26,7 @@
 </div>
 
 
-<mat-table  class="lessons-table mat-elevation-z8" [dataSource]="dataSource" matSort
+<mat-table  class="entity-table mat-elevation-z8" [dataSource]="dataSource" matSort
             matSortActive="name" matSortDirection="asc" matSortDisableClear>
 
 
