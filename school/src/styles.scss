@@ -21,9 +21,11 @@ mat-dialog-content  {
   }
 }
 
-
 .entity-search-input {
-  padding-left: 8px;
+  .mat-input-element {
+    padding-left: 8px;
+    caret-color: white;
+  }
 }
 
 .w-75{
